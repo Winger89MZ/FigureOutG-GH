@@ -8,36 +8,65 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var tabIndex = 1
-    
     var body: some View {
-        VStack(spacing: 0) {
-                GeometryReader { g in
-                    Rectangle()
-                        .frame(width: 100, height: 100, alignment: .center)
-                        .foregroundColor(.blue)
-                        .onTapGesture {
-                            print("global x: \(g.frame(in: .global).minX), \(g.frame(in: .global).midX),  \(g.frame(in: .global).maxX)")
-                            print("global y: \(g.frame(in: .global).minY), \(g.frame(in: .global).midY),  \(g.frame(in: .global).maxY)")
-                            print("local x: \(g.frame(in: .local).minX), \(g.frame(in: .local).midX),  \(g.frame(in: .global).maxX)")
-                            print("local y: \(g.frame(in: .local).minY), \(g.frame(in: .local).midY),  \(g.frame(in: .global).maxY)")
-                        }.position(x: 200, y: 200)
-                }
-                    GeometryReader { g in
-                        Rectangle()
-                            .frame(width: 100, height: 100, alignment: .center)
-                            .foregroundColor(.green)
-                            .onTapGesture {
-                                print("global x: \(g.frame(in: .global).minX), \(g.frame(in: .global).midX),  \(g.frame(in: .global).maxX)")
-                                print("global y: \(g.frame(in: .global).minY), \(g.frame(in: .global).midY),  \(g.frame(in: .global).maxY)")
-                                print("local x: \(g.frame(in: .local).minX), \(g.frame(in: .local).midX),  \(g.frame(in: .local).maxX)")
-                                print("local y: \(g.frame(in: .local).minY), \(g.frame(in: .local).midY),  \(g.frame(in: .local).maxY)")
-                            }
-                            .position(x: 200, y: 200)
+        TabView {
+            PeopleView()
+                .tabItem {
+                    VStack {
+                        Image(systemName: "person.3")
+                        Text("People")
                     }
                 }
+            PreferencesView()
+                .tabItem {
+                    VStack {
+                        Image(systemName: "gear")
+                        Text("Settings")
+                    }
+                }
+        }
+        .environmentObject(People())
     }
 }
+
+struct Person: Identifiable {
+    var id = UUID()
+    var name: String
+    var address: String
+    var company: String
+    var yearsExperience: Int
+}
+
+class People: ObservableObject {
+    @Published var people = [Person]()
+    @Published var showNames = true
+    @Published var showAddresses = true
+    @Published var showCompanies = true
+    @Published var showYearsExperience = true
+    
+    init() {
+        let person1 = Person(
+            name: "Biff J. Biffson",
+            address: "123 Monkey Lane, Wowville, MO",
+            company: "Acme Bananas",
+            yearsExperience: 17
+        ); people.append(person1)
+        let person2 = Person(
+            name: "Bonnie B. Goode",
+            address: "321 Baboon Street, Ughville, KS",
+            company: "Ajax Bananas",
+            yearsExperience: 8
+        ); people.append(person2)
+        let person3 = Person(
+            name: "Elmo Spiffer",
+            address: "40 Undada Bridge, Luckytown, NE",
+            company: "Bananas R Us",
+            yearsExperience: 43
+        ); people.append(person3)
+        
+    }
+}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
