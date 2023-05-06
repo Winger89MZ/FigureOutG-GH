@@ -8,64 +8,39 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        TabView {
-            PeopleView()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "person.3")
-                        Text("People")
-                    }
-                }
-            PreferencesView()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                }
-        }
-        .environmentObject(People())
-    }
-}
-
-struct Person: Identifiable {
-    var id = UUID()
-    var name: String
-    var address: String
-    var company: String
-    var yearsExperience: Int
-}
-
-class People: ObservableObject {
-    @Published var people = [Person]()
-    @Published var showNames = true
-    @Published var showAddresses = true
-    @Published var showCompanies = true
-    @Published var showYearsExperience = true
+    @State private var randomColor = [
+        Color.blue, Color.red, Color.green, Color.yellow,
+        Color.orange, Color.cyan, Color.pink, Color.mint]
     
-    init() {
-        let person1 = Person(
-            name: "Biff J. Biffson",
-            address: "123 Monkey Lane, Wowville, MO",
-            company: "Acme Bananas",
-            yearsExperience: 17
-        ); people.append(person1)
-        let person2 = Person(
-            name: "Bonnie B. Goode",
-            address: "321 Baboon Street, Ughville, KS",
-            company: "Ajax Bananas",
-            yearsExperience: 8
-        ); people.append(person2)
-        let person3 = Person(
-            name: "Elmo Spiffer",
-            address: "40 Undada Bridge, Luckytown, NE",
-            company: "Bananas R Us",
-            yearsExperience: 43
-        ); people.append(person3)
-        
+    var body: some View {
+        GeometryReader { g in
+            
+            TabView {
+                ForEach(0..<50) { j in
+                    let randIndex = Int.random(in: 0...7)
+                    
+                    Rectangle()
+                        .fill(randomColor[randIndex])
+                        .frame(width: g.size.width - 40,
+                               height: g.size.height - 100)
+                        .cornerRadius(20)
+                        .shadow(color: .gray, radius: 10, x: -5, y: 5)
+                        .overlay(
+                            Image(systemName: "\(j+1).circle"))
+                        .font(.system(size: 250))
+                    
+                }
+                
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
+            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+            
+        }
+
     }
 }
+
+
 
 
 struct ContentView_Previews: PreviewProvider {
